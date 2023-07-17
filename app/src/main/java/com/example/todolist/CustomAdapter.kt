@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class CustomAdapter(private val mList: List<ItemsViewModel>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+class CustomAdapter(private val mList: MutableList<ItemsViewModel>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,6 +34,12 @@ class CustomAdapter(private val mList: List<ItemsViewModel>) : RecyclerView.Adap
     // return the number of the items in the list
     override fun getItemCount(): Int {
         return mList.size
+    }
+
+    fun addItem(item: ItemsViewModel){
+        mList.add(item)
+        // Update data
+        notifyDataSetChanged()
     }
 
     // Holds the views for adding it to text
