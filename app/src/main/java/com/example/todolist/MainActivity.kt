@@ -27,10 +27,11 @@ class MainActivity : AppCompatActivity() {
         stubContainer = findViewById(R.id.main_no_items_container)
         fab = findViewById(R.id.main_fab)
 
-        fab.setOnClickListener{
-            adapter.addItem(ItemsViewModel("New Title:","Description:", 1))
-            Log.d("testlog","FAB works")
+        fab.setOnClickListener(){
+            val dialog = CustomDialog(this)
+            dialog.show()
         }
+
         // this creates a vertical layout Manager
         recyclerview.layoutManager = LinearLayoutManager(this)
 
@@ -60,4 +61,10 @@ class MainActivity : AppCompatActivity() {
         recyclerview.adapter = adapter
         Log.d("testlog","OnCreate has been finished")
     }
+
+    fun addItem(toString: String) {
+        adapter.addItem(ItemsViewModel(toString, "Description:", 1))
+        Log.d("testlog", "FAB works")
+    }
+
 }
