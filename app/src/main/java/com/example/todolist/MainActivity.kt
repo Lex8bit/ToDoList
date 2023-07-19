@@ -37,21 +37,10 @@ class MainActivity : AppCompatActivity() {
 
         // ArrayList of class ItemsViewModel
         val data = ArrayList<ItemsViewModel>()
-
-        // This loop will create 20 Views containing
-        // the image with the count of view
-        for (i in 1..20) {
-            data.add(ItemsViewModel("Title: $i","Description: $i",i))
-        }
         if (data.isNullOrEmpty()){
+            Log.d("testlog","Container is EMPTY")
             stubContainer.visibility = VISIBLE
             recyclerview.visibility = INVISIBLE
-            Log.d("testlog", "List is EMPTY")
-        }
-        else{
-            stubContainer.visibility = INVISIBLE
-            recyclerview.visibility = VISIBLE
-            Log.d("testlog", "List is NOT EMPTY")
         }
 
         // This will pass the ArrayList to our Adapter
@@ -62,9 +51,9 @@ class MainActivity : AppCompatActivity() {
         Log.d("testlog","OnCreate has been finished")
     }
 
-    fun addItem(toString: String) {
-        adapter.addItem(ItemsViewModel(toString, "Description:", 1))
-        Log.d("testlog", "FAB works")
+    fun addItem(item: ItemsViewModel) {
+        stubContainer.visibility = INVISIBLE
+        recyclerview.visibility = VISIBLE
+        adapter.addItem(item)
     }
-
 }

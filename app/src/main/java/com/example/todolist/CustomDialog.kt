@@ -10,9 +10,12 @@ import android.widget.EditText
 
 class CustomDialog(var activity: MainActivity): Dialog(activity), View.OnClickListener {
 
-    var yes : Button? = null
-    var no : Button? = null
-    private lateinit var inputField : EditText
+    private lateinit var okButton : Button
+    private lateinit var cancelButton : Button
+    private lateinit var inputFieldTitle : EditText
+    private lateinit var inputFieldDescription : EditText
+    private lateinit var inputFieldNumber : EditText
+
 
     /**
     Для контроля размера диалогового окна
@@ -26,28 +29,33 @@ class CustomDialog(var activity: MainActivity): Dialog(activity), View.OnClickLi
         this.window?.attributes = lp
     }
     private fun initViews() {
-        yes = findViewById(R.id.dialogOkButton)
-        no = findViewById(R.id.dialogCancelButton)
-        yes?.setOnClickListener(this)
-        no?.setOnClickListener(this)
+        okButton = findViewById(R.id.dialog_ok_button)
+        cancelButton = findViewById(R.id.dialog_cancel_button)
+        okButton.setOnClickListener(this)
+        cancelButton.setOnClickListener(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_template)
-        inputField = findViewById(R.id.dialogInput)
+        inputFieldTitle = findViewById(R.id.dialog_input_title)
+        inputFieldDescription = findViewById(R.id.dialog_input_descriptions)
+        inputFieldNumber = findViewById(R.id.dialog_input_number)
         dialogSizeControl()
         initViews()
     }
 
     override fun onClick(view: View) {
         when (view.id){
-            R.id.dialogOkButton -> {
-                val inputResult = inputField.text
-                activity.addItem(inputResult.toString())
+            R.id.dialog_ok_button -> {
+                val inputTitleResult = inputFieldTitle.text.toString()
+                val inputDescriptionResult = inputFieldDescription.text.toString()
+                val inputNumberResult = inputFieldNumber.text.toString().toInt()
+              //  val inputResult = ItemsViewModel(inputFieldTitle.text.toString(), inputFieldDescription.text.toString(),inputFieldNumber.text.toString().toInt())
+                activity.addItem(ItemsViewModel(inputTitleResult,inputDescriptionResult,inputNumberResult))
                 dismiss()
             }
-            R.id.dialogCancelButton -> dismiss()
+            R.id.dialog_cancel_button -> dismiss()
             else ->{
             }
         }

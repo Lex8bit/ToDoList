@@ -23,13 +23,10 @@ class CustomAdapter(private val mList: MutableList<ItemsViewModel>) : RecyclerVi
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val ItemsViewModel = mList[position]
-
         // sets the text to the textview from our itemHolder class
         holder.titleView.text = ItemsViewModel.title
         holder.descriptionView.text = ItemsViewModel.description
         holder.numberView.text = ItemsViewModel.number.toString()
-
-
     }
 
     // return the number of the items in the list
