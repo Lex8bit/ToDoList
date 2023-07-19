@@ -50,8 +50,7 @@ class CustomDialog(var activity: MainActivity): Dialog(activity), View.OnClickLi
             R.id.dialog_ok_button -> {
                 val inputTitleResult = inputFieldTitle.text.toString()
                 val inputDescriptionResult = inputFieldDescription.text.toString()
-                val inputNumberResult = inputFieldNumber.text.toString().toInt()
-              //  val inputResult = ItemsViewModel(inputFieldTitle.text.toString(), inputFieldDescription.text.toString(),inputFieldNumber.text.toString().toInt())
+                val inputNumberResult = inputFieldNumber.text.toString().toIntOrNull()?: 0
                 activity.addItem(ItemsViewModel(inputTitleResult,inputDescriptionResult,inputNumberResult))
                 dismiss()
             }
