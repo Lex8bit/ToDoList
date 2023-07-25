@@ -25,7 +25,7 @@
             android:id="@+id/main_no_items_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nothing To-Do"
+            android:text="@string/nothing_to_do"
             android:textSize="30sp"/>
     </LinearLayout>
 

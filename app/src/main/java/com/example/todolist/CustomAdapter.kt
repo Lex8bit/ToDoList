@@ -1,13 +1,14 @@
 package com.example.todolist
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 
-class CustomAdapter(private val mList: MutableList<ItemsViewModel>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+class CustomAdapter(private var mList: MutableList<ItemsViewModel>, private val click: OnItemClick) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -27,6 +28,9 @@ class CustomAdapter(private val mList: MutableList<ItemsViewModel>) : RecyclerVi
         holder.titleView.text = ItemsViewModel.title
         holder.descriptionView.text = ItemsViewModel.description
         holder.numberView.text = ItemsViewModel.number.toString()
+        holder.containerView.setOnClickListener{
+            click.itemClicked(ItemsViewModel)
+        }
     }
 
     // return the number of the items in the list
@@ -34,8 +38,8 @@ class CustomAdapter(private val mList: MutableList<ItemsViewModel>) : RecyclerVi
         return mList.size
     }
 
-    fun addItem(item: ItemsViewModel){
-        mList.add(item)
+    fun updateList(updatedList: List<ItemsViewModel>){
+        mList = updatedList.toMutableList()
         // Update data
         notifyDataSetChanged()
     }
@@ -45,6 +49,7 @@ class CustomAdapter(private val mList: MutableList<ItemsViewModel>) : RecyclerVi
         val titleView: TextView = itemView.findViewById(R.id.item_recycler_title)
         val descriptionView: TextView = itemView.findViewById(R.id.item_recycler_description)
         val numberView: TextView = itemView.findViewById(R.id.item_recycler_number)
+        val containerView: ConstraintLayout = itemView.findViewById(R.id.item_recycler_container)
 
     }
 }
