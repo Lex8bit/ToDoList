@@ -8,14 +8,16 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 
-class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean): Dialog(activity), View.OnClickListener {
+class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, private val item: ItemsViewModel?): Dialog(activity), View.OnClickListener {
 
     private lateinit var okButton : Button
     private lateinit var cancelButton : Button
     private lateinit var inputFieldTitle : EditText
     private lateinit var inputFieldDescription : EditText
     private lateinit var inputFieldNumber : EditText
+    private lateinit var dialogLable : TextView
 
 
     /**
@@ -42,6 +44,7 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean): 
         inputFieldTitle = findViewById(R.id.dialog_input_title)
         inputFieldDescription = findViewById(R.id.dialog_input_descriptions)
         inputFieldNumber = findViewById(R.id.dialog_input_number)
+        dialogLable = findViewById(R.id.dialog_lable)
         if (isNewItem){
             createNewItem()
         }else{
@@ -53,15 +56,41 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean): 
 
     private fun updateExistingItem() {
         Log.d("testlog","updateExistingItem() has been cold")
-    }
+        dialogLable.text = "Update item"
+        inputFieldTitle.setText(item?.title)
+        inputFieldDescription.setText(item?.description)
+        inputFieldNumber.setText(item?.number.toString())
 
+    }
     private fun createNewItem() {
         Log.d("testlog","createNewItem() has been cold")
     }
 
     override fun onClick(view: View) {
-        /**ШАГ 2. Отправляем данные в БД
-         * 2.1 Вытаскиваем данные из полей ввода*/
+        if (isNewItem){
+            okNewItemBeenClicked(view)
+        }else{
+            okUpdateItemBeenClicked(view)
+        }
+        dismiss()//Закрытие диалогового окна
+    }
+
+    private fun okUpdateItemBeenClicked(view: View) {
+        when (view.id){
+            R.id.dialog_ok_button -> {
+                val inputTitleResult = inputFieldTitle.text.toString()
+                val inputDescriptionResult = inputFieldDescription.text.toString()
+                val inputNumberResult = inputFieldNumber.text.toString().toIntOrNull()?: 0
+                activity.updateItem(ItemsViewModel(item?.id ?: 0,inputTitleResult,inputDescriptionResult,inputNumberResult))
+                dismiss()
+            }
+            R.id.dialog_cancel_button -> dismiss()
+        }
+    }
+
+    /**ШАГ 2. Отправляем данные в БД
+     * 2.1 Вытаскиваем данные из полей ввода*/
+    private fun okNewItemBeenClicked(view: View) {
         when (view.id){
             R.id.dialog_ok_button -> {
                 val inputTitleResult = inputFieldTitle.text.toString()
@@ -71,10 +100,7 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean): 
                 dismiss()
             }
             R.id.dialog_cancel_button -> dismiss()
-            else ->{
-            }
         }
-        dismiss()//Закрытие диалогового окна
     }
 
 }

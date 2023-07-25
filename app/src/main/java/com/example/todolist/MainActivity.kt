@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), OnItemClick {
 
         fab.setOnClickListener(){
             /**ШАГ 1 Появление диалогового окна для сбора информации*/
-            val dialog = CustomDialog(this, true)
+            val dialog = CustomDialog(this, true, null)
             dialog.show()
         }
 
@@ -87,11 +87,14 @@ class MainActivity : AppCompatActivity(), OnItemClick {
         stubContainer.visibility = INVISIBLE
         recyclerview.visibility = VISIBLE
         db.todoDao().insertItem(item)
+    }fun  updateItem(item: ItemsViewModel) {
+        /** Обновление данных в БД*/
+        db.todoDao().updateItem(item)
     }
 
     override fun itemClicked(item: ItemsViewModel) {
         Log.d("testlog", "открыли ячейку для редактирования $item")
-        val dialog = CustomDialog(this, false)
+        val dialog = CustomDialog(this, false, item)
         dialog.show()
     }
 }
