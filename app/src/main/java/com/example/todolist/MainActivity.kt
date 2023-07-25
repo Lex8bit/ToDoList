@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity(), OnItemClick {
 
 
         /**Удаление по свайпу*/
-        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -106,6 +106,7 @@ class MainActivity : AppCompatActivity(), OnItemClick {
                 // below line is to notify our item is removed from adapter.
                 adapter.notifyItemRemoved(viewHolder.adapterPosition)
 
+                deleteItem(deletedCourse)   /**ТУТ УДАЛЯЕМ ЯЧЕЙКУ*/
                 // below line is to display our snackbar with action.
                 // below line is to display our snackbar with action.
                 // below line is to display our snackbar with action.
@@ -115,13 +116,12 @@ class MainActivity : AppCompatActivity(), OnItemClick {
                         View.OnClickListener {
                             // adding on click listener to our action of snack bar.
                             // below line is to add our item to array list with a position.
-                            data.toMutableList().add(position, deletedCourse)
-
+                            db.todoDao().insertItem(deletedCourse)
+                            //data.toMutableList().add(position, deletedCourse) - строчка которая была до этого. не работала, тк мы добавляли в лист
                             // below line is to notify item is
                             // added to our adapter class.
                             adapter.notifyItemInserted(position)
                         }).show()
-                deleteItem(deletedCourse)
             }
             // at last we are adding this
             // to our recycler view.
