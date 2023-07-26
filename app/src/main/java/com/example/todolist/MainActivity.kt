@@ -115,6 +115,12 @@ class MainActivity : AppCompatActivity(), OnItemClick {
             ) {
                 val itemView = viewHolder.itemView
                 val itemHeight = itemView.bottom - itemView.top
+                val isCanceled = dX == 0f && !isCurrentlyActive   //1
+                if (isCanceled) {
+                    clearCanvas(canvas, itemView.right + dX, itemView.top.toFloat(), itemView.right.toFloat(), itemView.bottom.toFloat())
+                    super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    return
+                } //2
 
                 // Draw the red delete background
                 background.color = backgroundColor
@@ -136,7 +142,13 @@ class MainActivity : AppCompatActivity(), OnItemClick {
                 // Draw the delete icon
                 deleteIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
                 deleteIcon.draw(canvas)
+
+                super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive) //3
             }
+
+            private fun clearCanvas(c: Canvas?, left: Float, top: Float, right: Float, bottom: Float) {
+                c?.drawRect(left, top, right, bottom, clearPaint)
+            }   //4
             /**Конец*/
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
