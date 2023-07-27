@@ -93,39 +93,40 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
     }
 
     private fun okUpdateItemBeenClicked(view: View) {
-        when (view.id){
-            R.id.dialog_ok_button -> {
-                val inputTitleResult = inputFieldTitle.text.toString()
-                val inputDescriptionResult = inputFieldDescription.text.toString()
-                val inputNumberResult = inputFieldNumber.text.toString().toIntOrNull()?: 0
-                activity.updateItem(ItemsViewModel(item?.id ?: 0,inputTitleResult,inputDescriptionResult,inputNumberResult))
-                dismiss()
-            }
-            R.id.dialog_cancel_button -> dismiss()
-        }
+
+        val inputTitleResult = inputFieldTitle.text.toString()
+        val inputDescriptionResult = inputFieldDescription.text.toString()
+        val inputNumberResult = inputFieldNumber.text.toString().toIntOrNull() ?: 0
+        activity.updateItem(
+            ItemsViewModel(
+                item?.id ?: 0,
+                inputTitleResult,
+                inputDescriptionResult,
+                inputNumberResult
+            )
+        )
+
     }
 
     /**ШАГ 2. Отправляем данные в БД
      * 2.1 Вытаскиваем данные из полей ввода*/
     private fun okNewItemBeenClicked(view: View) {
-        when (view.id){
-            R.id.dialog_ok_button -> {
-                val inputTitleResult = inputFieldTitle.text.toString()
-                val inputDescriptionResult = inputFieldDescription.text.toString()
-                val inputNumberResult = inputFieldNumber.text.toString().toIntOrNull()?: 0
-                activity.addItem(ItemsViewModel(0,inputTitleResult,inputDescriptionResult,inputNumberResult))
 
-                // Для SharedPref чтобы когда нажимали на Ок у нас очищались поля
-                inputFieldTitle.text.clear()
-                inputFieldDescription.text.clear()
-                inputFieldNumber.text.clear()
-
-
-                dismiss()
-            }
-            R.id.dialog_cancel_button -> dismiss()
-        }
-
+        val inputTitleResult = inputFieldTitle.text.toString()
+        val inputDescriptionResult = inputFieldDescription.text.toString()
+        val inputNumberResult = inputFieldNumber.text.toString().toIntOrNull() ?: 0
+        activity.addItem(
+            ItemsViewModel(
+                0,
+                inputTitleResult,
+                inputDescriptionResult,
+                inputNumberResult
+            )
+        )
+        // Для SharedPref чтобы когда нажимали на Ок у нас очищались поля
+        inputFieldTitle.text.clear()
+        inputFieldDescription.text.clear()
+        inputFieldNumber.text.clear()
     }
 
     //SharedPreferences записываем данные когда экран не активен
