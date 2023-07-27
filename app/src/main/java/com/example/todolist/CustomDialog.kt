@@ -1,7 +1,10 @@
 package com.example.todolist
 
 import android.app.Dialog
+import android.content.ClipData.Item
+import android.content.Context
 import android.os.Bundle
+import android.provider.Settings.Global.getString
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -64,6 +67,20 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
     }
     private fun createNewItem() {
         Log.d("testlog","createNewItem() has been cold")
+
+        //Доставать данные из SharedPreferences
+        val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
+        val titilefromPrefs = sharedPref.getString("titleKey","")
+        val descriptionfromPrefs = sharedPref.getString("descriptionKey","")
+        val numberfromPrefs = sharedPref.getString("numberKey","")
+        Log.d("prefstesting","clickData $titilefromPrefs, $descriptionfromPrefs, $numberfromPrefs")
+
+        inputFieldTitle.setText(titilefromPrefs)
+        inputFieldDescription.setText(descriptionfromPrefs)
+        inputFieldNumber.setText(numberfromPrefs.toString())
+//        inputFieldTitle.setText(item?.title)
+//        inputFieldDescription.setText(item?.description)
+//        inputFieldNumber.setText(item?.number.toString())
     }
 
     override fun onClick(view: View) {
@@ -97,10 +114,34 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
                 val inputDescriptionResult = inputFieldDescription.text.toString()
                 val inputNumberResult = inputFieldNumber.text.toString().toIntOrNull()?: 0
                 activity.addItem(ItemsViewModel(0,inputTitleResult,inputDescriptionResult,inputNumberResult))
+
+                // Для SharedPref чтобы когда нажимали на Ок у нас очищались поля
+                inputFieldTitle.text.clear()
+                inputFieldDescription.text.clear()
+                inputFieldNumber.text.clear()
+
+
                 dismiss()
             }
             R.id.dialog_cancel_button -> dismiss()
         }
+
     }
 
+    //SharedPreferences записываем данные когда экран не активен
+    override fun onStop() {
+        super.onStop()
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        Log.d("prefstesting","onStop has been called")
+        with (sharedPref.edit()) {
+            val inputTitleResult = inputFieldTitle.text.toString()
+            val inputDescriptionResult = inputFieldDescription.text.toString()
+            val inputNumberResult = inputFieldNumber.text.toString()
+            putString("titleKey", inputTitleResult)
+            putString("descriptionKey", inputDescriptionResult)
+            putString("numberKey", inputNumberResult)
+            apply()
+            Log.d("prefstesting","sharedPref has been applyed")
+        }
+    }
 }

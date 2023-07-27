@@ -1,5 +1,6 @@
 package com.example.todolist
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity(), OnItemClick {
         fab = findViewById(R.id.main_fab)
 
         fab.setOnClickListener(){
+
             /**ШАГ 1 Появление диалогового окна для сбора информации*/
             val dialog = CustomDialog(this, true, null)
             dialog.show()
@@ -81,16 +83,16 @@ class MainActivity : AppCompatActivity(), OnItemClick {
             Log.d("testlog","room check $it")
         })
 
-        /**Start*/
+        /**НАЧАЛО инициализация переменных для СВАЙПА с красным фоном 1*/
         val deleteIcon = ContextCompat.getDrawable(this, R.drawable.ic_delete_white_24)
         val intrinsicWidth = deleteIcon?.intrinsicWidth
         val intrinsicHeight = deleteIcon?.intrinsicHeight
         val background = ColorDrawable()
         val backgroundColor = Color.parseColor("#f44336")
         val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
-        /**FINISH*/
+        /**КОНЕЦ инициализации переменных для СВАЙПА с красным фоном 1*/
 
-        /**Удаление по свайпу*/
+        /**Начало Удаление по свайпу без фона 1 */
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -101,8 +103,9 @@ class MainActivity : AppCompatActivity(), OnItemClick {
                 // when the item is moved.
                 return false
             }
+            /**Конец Удаление по свайпу без фона 1*/
 
-            /**Начало*/
+            /**Начало Удаление по СВАЙПУ С КРАСНЫМ ФОНОМ 2*/
             // Let's draw our delete view
             override fun onChildDraw(
                 canvas: Canvas,
@@ -149,12 +152,13 @@ class MainActivity : AppCompatActivity(), OnItemClick {
             private fun clearCanvas(c: Canvas?, left: Float, top: Float, right: Float, bottom: Float) {
                 c?.drawRect(left, top, right, bottom, clearPaint)
             }   //4
-            /**Конец*/
+            /**КОНЕЦ Удаление по СВАЙПУ С КРАСНЫМ ФОНОМ 2*/
 
+            /**Начало Удаление по свайпу без фона 2 */
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 // this method is called when we swipe our item to right direction.
                 // on below line we are getting the item at a particular position.
-                val deletedCourse: ItemsViewModel =
+                val deletedToDoItem: ItemsViewModel =
                     data.get(viewHolder.adapterPosition)
 
                 // below line is to get the position
@@ -163,22 +167,22 @@ class MainActivity : AppCompatActivity(), OnItemClick {
 
                 // this method is called when item is swiped.
                 // below line is to remove item from our array list.
-                data.toMutableList().removeAt(viewHolder.adapterPosition)
+              //  data.toMutableList().removeAt(position)    //не нужно, тк наш лист при каждом изменении обновляется сам из ЛАйфДата
 
                 // below line is to notify our item is removed from adapter.
-                adapter.notifyItemRemoved(viewHolder.adapterPosition)
+                adapter.notifyItemRemoved(position)
 
-                deleteItem(deletedCourse)   /**ТУТ УДАЛЯЕМ ЯЧЕЙКУ*/
+                deleteItem(deletedToDoItem)   /**ТУТ УДАЛЯЕМ ЯЧЕЙКУ*/
                 // below line is to display our snackbar with action.
                 // below line is to display our snackbar with action.
                 // below line is to display our snackbar with action.
-                Snackbar.make(recyclerview, "Deleted " + deletedCourse.title, Snackbar.LENGTH_LONG)
+                Snackbar.make(recyclerview, "Deleted " + deletedToDoItem.title, Snackbar.LENGTH_LONG)
                     .setAction(
                         "Undo",
                         View.OnClickListener {
                             // adding on click listener to our action of snack bar.
                             // below line is to add our item to array list with a position.
-                            db.todoDao().insertItem(deletedCourse)
+                            db.todoDao().insertItem(deletedToDoItem)
                             //data.toMutableList().add(position, deletedCourse) - строчка которая была до этого. не работала, тк мы добавляли в лист
                             // below line is to notify item is
                             // added to our adapter class.
@@ -188,6 +192,8 @@ class MainActivity : AppCompatActivity(), OnItemClick {
             // at last we are adding this
             // to our recycler view.
         }).attachToRecyclerView(recyclerview)
+        /**Конец Удаление по свайпу без фона 2 */
+
     }
 
     private fun screenDataValidation(list: List<ItemsViewModel>) {
