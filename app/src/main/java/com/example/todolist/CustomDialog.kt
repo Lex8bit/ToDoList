@@ -132,17 +132,19 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
     //SharedPreferences записываем данные когда экран не активен
     override fun onStop() {
         super.onStop()
-        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
-        Log.d("prefstesting","onStop has been called")
-        with (sharedPref.edit()) {
-            val inputTitleResult = inputFieldTitle.text.toString()
-            val inputDescriptionResult = inputFieldDescription.text.toString()
-            val inputNumberResult = inputFieldNumber.text.toString()
-            putString("titleKey", inputTitleResult)
-            putString("descriptionKey", inputDescriptionResult)
-            putString("numberKey", inputNumberResult)
-            apply()
-            Log.d("prefstesting","sharedPref has been applyed")
+        if (isNewItem) {
+            val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+            Log.d("prefstesting", "onStop has been called")
+            with(sharedPref.edit()) {
+                val inputTitleResult = inputFieldTitle.text.toString()
+                val inputDescriptionResult = inputFieldDescription.text.toString()
+                val inputNumberResult = inputFieldNumber.text.toString()
+                putString("titleKey", inputTitleResult)
+                putString("descriptionKey", inputDescriptionResult)
+                putString("numberKey", inputNumberResult)
+                apply()
+                Log.d("prefstesting", "sharedPref has been applyed")
+            }
         }
     }
 }
