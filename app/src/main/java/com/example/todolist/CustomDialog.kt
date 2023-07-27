@@ -1,10 +1,8 @@
 package com.example.todolist
 
 import android.app.Dialog
-import android.content.ClipData.Item
 import android.content.Context
 import android.os.Bundle
-import android.provider.Settings.Global.getString
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -12,6 +10,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.lifecycle.viewmodel.viewModelFactory
 
 class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, private val item: ItemsViewModel?): Dialog(activity), View.OnClickListener {
 
@@ -78,16 +77,21 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
         inputFieldTitle.setText(titilefromPrefs)
         inputFieldDescription.setText(descriptionfromPrefs)
         inputFieldNumber.setText(numberfromPrefs.toString())
-//        inputFieldTitle.setText(item?.title)
-//        inputFieldDescription.setText(item?.description)
-//        inputFieldNumber.setText(item?.number.toString())
     }
 
     override fun onClick(view: View) {
         if (isNewItem){
-            okNewItemBeenClicked(view)
+            when(view){
+                okButton -> okNewItemBeenClicked(view)
+                cancelButton -> dismiss()
+            }
+            //okNewItemBeenClicked(view)
         }else{
-            okUpdateItemBeenClicked(view)
+            when(view){
+                okButton -> okUpdateItemBeenClicked(view)
+                cancelButton -> dismiss()
+            }
+           // okUpdateItemBeenClicked(view)
         }
         dismiss()//Закрытие диалогового окна
     }
