@@ -1,6 +1,5 @@
 package com.example.todolist
 
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -13,28 +12,26 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.LinearLayout
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
-import com.example.todolist.room.AppDatabase
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity(), OnItemClick {
 
+    private val mMainViewModel : MainViewModel by viewModels()
+
     private lateinit var stubContainer : LinearLayout
     private lateinit var fab : FloatingActionButton
     private lateinit var recyclerview : RecyclerView
     private lateinit var adapter : CustomAdapter
-    private lateinit var db : AppDatabase
 
     /** Шаг 3. Создаем LiveData для обработки данных*/
-    private lateinit var todoLiveData: LiveData<List<ItemsViewModel>>
     private lateinit var data: List<ItemsViewModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,8 +48,8 @@ class MainActivity : AppCompatActivity(), OnItemClick {
         fab.setOnClickListener(){
 
             /**ШАГ 1 Появление диалогового окна для сбора информации*/
-            val dialog = CustomDialog(this, true, null)
-            dialog.show()
+            val dialogFragment = CustomDialog(this, true, null)
+            dialogFragment.show(supportFragmentManager, "Custom Dialog")
         }
 
         // this creates a vertical layout Manager
@@ -64,17 +61,9 @@ class MainActivity : AppCompatActivity(), OnItemClick {
         recyclerview.adapter = adapter
         Log.d("testlog","OnCreate has been finished")
 
-        //room
-        db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java, "database-name"
-        )
-            .allowMainThreadQueries()
-            .build()
+        mMainViewModel.getAllData()
 
-        todoLiveData = db.todoDao().getAllItems()
-
-        todoLiveData.observe(this, Observer {
+        mMainViewModel.todoItemListResult.observe(this, Observer {
             data = it
             /** Шаг 4. Отображаем получаенные данные в списке*/
             //This will pass the ArraiList to our adapter
@@ -182,7 +171,7 @@ class MainActivity : AppCompatActivity(), OnItemClick {
                         View.OnClickListener {
                             // adding on click listener to our action of snack bar.
                             // below line is to add our item to array list with a position.
-                            db.todoDao().insertItem(deletedToDoItem)
+                            mMainViewModel.insertItem(deletedToDoItem)
                             //data.toMutableList().add(position, deletedCourse) - строчка которая была до этого. не работала, тк мы добавляли в лист
                             // below line is to notify item is
                             // added to our adapter class.
@@ -211,20 +200,20 @@ class MainActivity : AppCompatActivity(), OnItemClick {
         /**Отправка собранные данные в БД*/
         stubContainer.visibility = INVISIBLE
         recyclerview.visibility = VISIBLE
-        db.todoDao().insertItem(item)
+        mMainViewModel.insertItem(item)
     }
     fun  updateItem(item: ItemsViewModel) {
         /** Обновление данных в БД*/
-        db.todoDao().updateItem(item)
+        mMainViewModel.updateItem(item)
     }
     fun  deleteItem(item: ItemsViewModel) {
         /** Обновление данных в БД*/
-        db.todoDao().deleteItem(item)
+        mMainViewModel.deleteItem(item)
+
     }
 
     override fun itemClicked(item: ItemsViewModel) {
-        Log.d("testlog", "открыли ячейку для редактирования $item")
-        val dialog = CustomDialog(this, false, item)
-        dialog.show()
+        val dialogFragment = CustomDialog(this, false, item)
+        dialogFragment.show(supportFragmentManager, "Custom Dialog")
     }
 }

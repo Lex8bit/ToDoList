@@ -12,7 +12,7 @@ import com.example.todolist.ItemsViewModel
 @Dao
 interface ItemsToDoDao {
     @Query("SELECT * FROM itemsviewmodel")
-    fun getAllItems(): LiveData<List<ItemsViewModel>>
+    fun getAllItems(): List<ItemsViewModel>
 
     @Insert
     fun insertItem(itemsViewModel: ItemsViewModel)
