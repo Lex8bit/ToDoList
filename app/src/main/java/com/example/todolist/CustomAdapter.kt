@@ -27,7 +27,6 @@ class CustomAdapter(private var mList: MutableList<ItemsViewModel>, private val 
         // sets the text to the textview from our itemHolder class
         holder.titleView.text = ItemsViewModel.title
         holder.descriptionView.text = ItemsViewModel.description
-        holder.numberView.text = ItemsViewModel.number.toString()
         holder.containerView.setOnClickListener{
             click.itemClicked(ItemsViewModel)
         }
@@ -48,8 +47,6 @@ class CustomAdapter(private var mList: MutableList<ItemsViewModel>, private val 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
         val titleView: TextView = itemView.findViewById(R.id.item_recycler_title)
         val descriptionView: TextView = itemView.findViewById(R.id.item_recycler_description)
-        val numberView: TextView = itemView.findViewById(R.id.item_recycler_number)
         val containerView: ConstraintLayout = itemView.findViewById(R.id.item_recycler_container)
-
     }
 }

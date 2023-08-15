@@ -15,7 +15,7 @@ class PrefsManagerImpl(app: Application) : PrefsManager {
         val title = sharedPref.getString("titleKey","") ?: ""
         val description = sharedPref.getString("descriptionKey","") ?: ""
         val number = sharedPref.getInt("numberKey",0)
-        return ItemsViewModel(0, title, description, number)
+        return ItemsViewModel(0, title, description)
     }
 
     override fun saveDataInPrefs(key: String, value: String) {

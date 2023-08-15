@@ -23,7 +23,6 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
     private lateinit var cancelButton : Button
     private lateinit var inputFieldTitle : EditText
     private lateinit var inputFieldDescription : EditText
-    private lateinit var inputFieldNumber : EditText
     private lateinit var dialogLable : TextView
 
 
@@ -53,7 +52,6 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
             if (isNewItem){
                 inputFieldTitle.setText(it.title)
                 inputFieldDescription.setText(it.description)
-                inputFieldNumber.setText(it.number.toString())
             }
         })
     }
@@ -70,7 +68,6 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
     private fun initViews(view: View) {
         inputFieldTitle = view.findViewById(R.id.dialog_input_title)
         inputFieldDescription = view.findViewById(R.id.dialog_input_descriptions)
-        inputFieldNumber = view.findViewById(R.id.dialog_input_number)
         dialogLable = view.findViewById(R.id.dialog_lable)
 
         okButton = view.findViewById(R.id.dialog_ok_button)
@@ -84,8 +81,6 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
         dialogLable.text = "Update item"
         inputFieldTitle.setText(item?.title)
         inputFieldDescription.setText(item?.description)
-        inputFieldNumber.setText(item?.number.toString())
-
     }
     private fun createNewItem() {
         mCustomDialogViewModel.getToDoItemFromPrefs()
@@ -112,13 +107,11 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
 
         val inputTitleResult = inputFieldTitle.text.toString()
         val inputDescriptionResult = inputFieldDescription.text.toString()
-        val inputNumberResult = inputFieldNumber.text.toString().toIntOrNull() ?: 0
         activity.updateItem(
             ItemsViewModel(
                 item?.id ?: 0,
                 inputTitleResult,
-                inputDescriptionResult,
-                inputNumberResult
+                inputDescriptionResult
             )
         )
 
@@ -130,19 +123,16 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
 
         val inputTitleResult = inputFieldTitle.text.toString()
         val inputDescriptionResult = inputFieldDescription.text.toString()
-        val inputNumberResult = inputFieldNumber.text.toString().toIntOrNull() ?: 0
         activity.addItem(
             ItemsViewModel(
                 0,
                 inputTitleResult,
-                inputDescriptionResult,
-                inputNumberResult
+                inputDescriptionResult
             )
         )
         // Для SharedPref чтобы когда нажимали на Ок у нас очищались поля
         inputFieldTitle.text.clear()
         inputFieldDescription.text.clear()
-        inputFieldNumber.text.clear()
     }
 
     //SharedPreferences записываем данные когда экран не активен
@@ -151,10 +141,8 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
         if (isNewItem) {
             val inputTitleResult = inputFieldTitle.text.toString()
             val inputDescriptionResult = inputFieldDescription.text.toString()
-            val inputNumberResult = inputFieldNumber.text.toString()
             mCustomDialogViewModel.saveDataInPrefs("titleKey",inputTitleResult)
             mCustomDialogViewModel.saveDataInPrefs("descriptionKey",inputDescriptionResult)
-            mCustomDialogViewModel.saveDataInPrefs("numberKey",inputNumberResult)
         }
     }
 }
