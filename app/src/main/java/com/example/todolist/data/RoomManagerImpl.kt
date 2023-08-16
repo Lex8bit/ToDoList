@@ -7,14 +7,14 @@ import com.example.todolist.RoomManager
 import com.example.todolist.room.AppDatabase
 
 /**
- * Use to manage work with ROOM
+ * Manager that handles logic with ROOM database
  */
 class RoomManagerImpl(private val context : Context) : RoomManager {
        //room
        private var db = Room.databaseBuilder(
               context,
               AppDatabase::
-              class.java, "database-name"
+              class.java, DATABASE_NAME
        )
               .allowMainThreadQueries()
               .build()
@@ -33,6 +33,10 @@ class RoomManagerImpl(private val context : Context) : RoomManager {
 
        override fun deleteItem(item: ItemsViewModel) {
               db.todoDao().deleteItem(item)
+       }
+
+       companion object{
+              private const val DATABASE_NAME = "database-name"
        }
 
 }

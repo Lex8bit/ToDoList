@@ -7,14 +7,12 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
 import android.widget.LinearLayout
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,60 +22,44 @@ import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity(), OnItemClick {
 
-    private val mMainViewModel : MainViewModel by viewModels()
+    private val mainViewModel : MainViewModel by viewModels()
 
     private lateinit var stubContainer : LinearLayout
     private lateinit var fab : FloatingActionButton
-    private lateinit var recyclerview : RecyclerView
+    private lateinit var recyclerView : RecyclerView
     private lateinit var adapter : CustomAdapter
-
-    /** Шаг 3. Создаем LiveData для обработки данных*/
     private lateinit var data: List<ItemsViewModel>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Log.d("testlog","OnCreate has been started")
+        initView()
+        swipeImplementation()
+        observers()
 
-        // getting the recyclerview by its id
-        recyclerview = findViewById(R.id.recyclerview)
-        stubContainer = findViewById(R.id.main_no_items_container)
-        fab = findViewById(R.id.main_fab)
-
-        fab.setOnClickListener(){
-
-            /**ШАГ 1 Появление диалогового окна для сбора информации*/
-            val dialogFragment = CustomDialog(this, true, null)
-            dialogFragment.show(supportFragmentManager, "Custom Dialog")
+        fab.setOnClickListener() {
+            val dialogFragment = CustomDialog( true, null)
+            dialogFragment.show(supportFragmentManager, getString(R.string.custom_dialog))
         }
 
-        // this creates a vertical layout Manager
-        recyclerview.layoutManager = LinearLayoutManager(this)
+        mainViewModel.getAllData()
+    }
 
-        adapter = CustomAdapter(mutableListOf(), this)
-
-        // Setting the Adapter with the recyclerview
-        recyclerview.adapter = adapter
-        Log.d("testlog","OnCreate has been finished")
-
-        mMainViewModel.getAllData()
-
-        mMainViewModel.todoItemListResult.observe(this, Observer {
+    private fun observers() {
+        mainViewModel.todoItemListResult.observe(this, Observer {
             data = it
-            /** Шаг 4. Отображаем получаенные данные в списке*/
-            //This will pass the ArraiList to our adapter
             adapter.updateList(it)
             screenDataValidation(it)
-            Log.d("testlog","room check $it")
         })
+    }
 
+    private fun swipeImplementation() {
         /**НАЧАЛО инициализация переменных для СВАЙПА с красным фоном 1*/
         val deleteIcon = ContextCompat.getDrawable(this, R.drawable.ic_delete_white_24)
         val intrinsicWidth = deleteIcon?.intrinsicWidth
         val intrinsicHeight = deleteIcon?.intrinsicHeight
         val background = ColorDrawable()
-        val backgroundColor = Color.parseColor("#f44336")
+        val backgroundColor = Color.parseColor(getString(R.string.red))
         val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
         /**КОНЕЦ инициализации переменных для СВАЙПА с красным фоном 1*/
 
@@ -109,8 +91,22 @@ class MainActivity : AppCompatActivity(), OnItemClick {
                 val itemHeight = itemView.bottom - itemView.top
                 val isCanceled = dX == 0f && !isCurrentlyActive   //1
                 if (isCanceled) {
-                    clearCanvas(canvas, itemView.right + dX, itemView.top.toFloat(), itemView.right.toFloat(), itemView.bottom.toFloat())
-                    super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    clearCanvas(
+                        canvas,
+                        itemView.right + dX,
+                        itemView.top.toFloat(),
+                        itemView.right.toFloat(),
+                        itemView.bottom.toFloat()
+                    )
+                    super.onChildDraw(
+                        canvas,
+                        recyclerView,
+                        viewHolder,
+                        dX,
+                        dY,
+                        actionState,
+                        isCurrentlyActive
+                    )
                     return
                 } //2
 
@@ -135,10 +131,24 @@ class MainActivity : AppCompatActivity(), OnItemClick {
                 deleteIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
                 deleteIcon.draw(canvas)
 
-                super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive) //3
+                super.onChildDraw(
+                    canvas,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                ) //3
             }
 
-            private fun clearCanvas(c: Canvas?, left: Float, top: Float, right: Float, bottom: Float) {
+            private fun clearCanvas(
+                c: Canvas?,
+                left: Float,
+                top: Float,
+                right: Float,
+                bottom: Float
+            ) {
                 c?.drawRect(left, top, right, bottom, clearPaint)
             }   //4
             /**КОНЕЦ Удаление по СВАЙПУ С КРАСНЫМ ФОНОМ 2*/
@@ -156,22 +166,27 @@ class MainActivity : AppCompatActivity(), OnItemClick {
 
                 // this method is called when item is swiped.
                 // below line is to remove item from our array list.
-              //  data.toMutableList().removeAt(position)    //не нужно, тк наш лист при каждом изменении обновляется сам из ЛАйфДата
+                //  data.toMutableList().removeAt(position)    //не нужно, тк наш лист при каждом изменении обновляется сам из ЛАйфДата
 
                 // below line is to notify our item is removed from adapter.
                 adapter.notifyItemRemoved(position)
 
-                deleteItem(deletedToDoItem)   /**ТУТ УДАЛЯЕМ ЯЧЕЙКУ*/
+                mainViewModel.deleteItem(deletedToDoItem)
+                /**ТУТ УДАЛЯЕМ ЯЧЕЙКУ*/
                 // below line is to display our snackbar with action.
                 // below line is to display our snackbar with action.
                 // below line is to display our snackbar with action.
-                Snackbar.make(recyclerview, "Deleted " + deletedToDoItem.title, Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    recyclerView,
+                    "Deleted " + deletedToDoItem.title,
+                    Snackbar.LENGTH_LONG
+                )
                     .setAction(
                         "Undo",
                         View.OnClickListener {
                             // adding on click listener to our action of snack bar.
                             // below line is to add our item to array list with a position.
-                            mMainViewModel.insertItem(deletedToDoItem)
+                            mainViewModel.insertItem(deletedToDoItem)
                             //data.toMutableList().add(position, deletedCourse) - строчка которая была до этого. не работала, тк мы добавляли в лист
                             // below line is to notify item is
                             // added to our adapter class.
@@ -180,40 +195,33 @@ class MainActivity : AppCompatActivity(), OnItemClick {
             }
             // at last we are adding this
             // to our recycler view.
-        }).attachToRecyclerView(recyclerview)
+        }).attachToRecyclerView(recyclerView)
         /**Конец Удаление по свайпу без фона 2 */
+    }
 
+    private fun initView() {
+        recyclerView = findViewById(R.id.recyclerview)
+        stubContainer = findViewById(R.id.main_no_items_container)
+        fab = findViewById(R.id.main_fab)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = CustomAdapter(mutableListOf(), this)
+        recyclerView.adapter = adapter
     }
 
     private fun screenDataValidation(list: List<ItemsViewModel>) {
         if (list.isNullOrEmpty()){
-            Log.d("testlog","Container is EMPTY")
-            stubContainer.visibility = VISIBLE
-            recyclerview.visibility = INVISIBLE
+            setupStub(showStub = true, showRecycler = false)
         }else{
-            stubContainer.visibility = INVISIBLE
-            recyclerview.visibility = VISIBLE
+            setupStub(showStub = false, showRecycler = true)
         }
     }
-
-    fun addItem(item: ItemsViewModel) {
-        /**Отправка собранные данные в БД*/
-        stubContainer.visibility = INVISIBLE
-        recyclerview.visibility = VISIBLE
-        mMainViewModel.insertItem(item)
-    }
-    fun  updateItem(item: ItemsViewModel) {
-        /** Обновление данных в БД*/
-        mMainViewModel.updateItem(item)
-    }
-    fun  deleteItem(item: ItemsViewModel) {
-        /** Обновление данных в БД*/
-        mMainViewModel.deleteItem(item)
-
+    private fun setupStub (showStub:Boolean, showRecycler: Boolean){
+        stubContainer.isVisible = showStub
+        recyclerView.isVisible = showRecycler
     }
 
     override fun itemClicked(item: ItemsViewModel) {
-        val dialogFragment = CustomDialog(this, false, item)
-        dialogFragment.show(supportFragmentManager, "Custom Dialog")
+        val dialogFragment = CustomDialog(false, item)
+        dialogFragment.show(supportFragmentManager, getString(R.string.custom_dialog))
     }
 }

@@ -16,13 +16,11 @@ class CustomAdapter(private var mList: MutableList<ItemsViewModel>, private val 
         // that is used to hold list item
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.card_view_design, parent, false)
-
         return ViewHolder(view)
     }
 
     // binds the list items to a view
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         val ItemsViewModel = mList[position]
         // sets the text to the textview from our itemHolder class
         holder.titleView.text = ItemsViewModel.title

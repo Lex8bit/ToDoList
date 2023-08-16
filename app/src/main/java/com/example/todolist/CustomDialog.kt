@@ -13,17 +13,22 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.example.todolist.data.PrefsManagerImpl.Companion.PREFS_DESCRIPTION_KEY
+import com.example.todolist.data.PrefsManagerImpl.Companion.PREFS_TITLE_KEY
 
-class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, private val item: ItemsViewModel?): DialogFragment(), View.OnClickListener {
+class CustomDialog(
+    private val isNewItem: Boolean,
+    private val item: ItemsViewModel?) : DialogFragment(), View.OnClickListener {
 
-    private val mCustomDialogViewModel : CustomDialogViewModel by activityViewModels()
+    private val customDialogViewModel : CustomDialogViewModel by activityViewModels()
+    private val mainViewModel : MainViewModel by activityViewModels()
 
 
     private lateinit var okButton : Button
     private lateinit var cancelButton : Button
     private lateinit var inputFieldTitle : EditText
     private lateinit var inputFieldDescription : EditText
-    private lateinit var dialogLable : TextView
+    private lateinit var dialogLabel : TextView
 
 
     override fun onCreateView(
@@ -37,18 +42,23 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
         initViews(view)
 
         if (isNewItem){
-            createNewItem()
+            customDialogViewModel.getToDoItemFromPrefs()
         }else{
-            updateExistingItem()
+            dialogLabel.text = getString(R.string.update_item)
+            inputFieldTitle.setText(item?.title)
+            inputFieldDescription.setText(item?.description)
         }
-
         return view
     }
 
     override fun onResume() {
         super.onResume()
         dialogSizeControl()
-        mCustomDialogViewModel.todoItemResult.observe(this, Observer {
+        observers()
+    }
+
+    private fun observers() {
+        customDialogViewModel.todoItemResult.observe(this, Observer {
             if (isNewItem){
                 inputFieldTitle.setText(it.title)
                 inputFieldDescription.setText(it.description)
@@ -68,22 +78,11 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
     private fun initViews(view: View) {
         inputFieldTitle = view.findViewById(R.id.dialog_input_title)
         inputFieldDescription = view.findViewById(R.id.dialog_input_descriptions)
-        dialogLable = view.findViewById(R.id.dialog_lable)
-
+        dialogLabel = view.findViewById(R.id.dialog_lable)
         okButton = view.findViewById(R.id.dialog_ok_button)
         cancelButton = view.findViewById(R.id.dialog_cancel_button)
         okButton.setOnClickListener(this)
         cancelButton.setOnClickListener(this)
-    }
-
-    private fun updateExistingItem() {
-        Log.d("testlog","updateExistingItem() has been cold")
-        dialogLable.text = "Update item"
-        inputFieldTitle.setText(item?.title)
-        inputFieldDescription.setText(item?.description)
-    }
-    private fun createNewItem() {
-        mCustomDialogViewModel.getToDoItemFromPrefs()
     }
 
     override fun onClick(view: View) {
@@ -92,13 +91,11 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
                 okButton -> okNewItemBeenClicked(view)
                 cancelButton -> dismiss()
             }
-            //okNewItemBeenClicked(view)
         }else{
             when(view){
                 okButton -> okUpdateItemBeenClicked(view)
                 cancelButton -> dismiss()
             }
-           // okUpdateItemBeenClicked(view)
         }
         dismiss()//Закрытие диалогового окна
     }
@@ -107,7 +104,7 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
 
         val inputTitleResult = inputFieldTitle.text.toString()
         val inputDescriptionResult = inputFieldDescription.text.toString()
-        activity.updateItem(
+        mainViewModel.updateItem(
             ItemsViewModel(
                 item?.id ?: 0,
                 inputTitleResult,
@@ -117,32 +114,28 @@ class CustomDialog(var activity: MainActivity, private val isNewItem: Boolean, p
 
     }
 
-    /**ШАГ 2. Отправляем данные в БД
-     * 2.1 Вытаскиваем данные из полей ввода*/
     private fun okNewItemBeenClicked(view: View) {
 
         val inputTitleResult = inputFieldTitle.text.toString()
         val inputDescriptionResult = inputFieldDescription.text.toString()
-        activity.addItem(
+        mainViewModel.insertItem(
             ItemsViewModel(
                 0,
                 inputTitleResult,
                 inputDescriptionResult
             )
         )
-        // Для SharedPref чтобы когда нажимали на Ок у нас очищались поля
+        /**Зачищаем поля для Prefs, чтобы после добавления они были пустыми*/
         inputFieldTitle.text.clear()
         inputFieldDescription.text.clear()
     }
-
-    //SharedPreferences записываем данные когда экран не активен
     override fun onStop() {
         super.onStop()
         if (isNewItem) {
             val inputTitleResult = inputFieldTitle.text.toString()
             val inputDescriptionResult = inputFieldDescription.text.toString()
-            mCustomDialogViewModel.saveDataInPrefs("titleKey",inputTitleResult)
-            mCustomDialogViewModel.saveDataInPrefs("descriptionKey",inputDescriptionResult)
+            customDialogViewModel.saveDataInPrefs(PREFS_TITLE_KEY,inputTitleResult)
+            customDialogViewModel.saveDataInPrefs(PREFS_DESCRIPTION_KEY,inputDescriptionResult)
         }
     }
 }

@@ -11,11 +11,18 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     private val todoItemList: MutableLiveData<List<ItemsViewModel>> = MutableLiveData()
     val todoItemListResult: LiveData<List<ItemsViewModel>> = todoItemList
 
+    /**
+     * Provides all data from Room
+     */
     fun getAllData() {
         val result = roomManager.getAllItems()
         todoItemList.postValue(result)
     }
 
+    /**
+     * Insert data in Room database
+     * @param item - provides item that need to be insert in room database
+     */
     fun insertItem(item: ItemsViewModel) {
          todoItemList.value.let {
              todoItemList.postValue(it?.plus(item))
@@ -23,11 +30,19 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
          }
     }
 
+    /**
+     * Update existing item in Room database
+     * @param item - provides item that need to be update in room database
+     */
     fun updateItem(item: ItemsViewModel) {
         roomManager.updateItem(item)
-// не обновляется Исправить!
+        todoItemList.postValue(roomManager.getAllItems())
     }
 
+    /**
+     * Delete existing item from Room database
+     * @param item - provides item that need to be deleted from room database
+     */
     fun deleteItem(item: ItemsViewModel) {
         todoItemList.value.let {
             todoItemList.postValue(it?.minus(item))
