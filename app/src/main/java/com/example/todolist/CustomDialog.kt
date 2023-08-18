@@ -2,7 +2,6 @@ package com.example.todolist
 
 import android.app.ActionBar
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +12,8 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.example.todolist.data.PrefsManagerImpl.Companion.PREFS_DESCRIPTION_KEY
-import com.example.todolist.data.PrefsManagerImpl.Companion.PREFS_TITLE_KEY
+import com.example.todolist.data.PrefsRepositoryImpl.Companion.PREFS_DESCRIPTION_KEY
+import com.example.todolist.data.PrefsRepositoryImpl.Companion.PREFS_TITLE_KEY
 
 class CustomDialog(
     private val isNewItem: Boolean,

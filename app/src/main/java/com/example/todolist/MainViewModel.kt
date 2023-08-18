@@ -4,10 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.todolist.data.RoomManagerImpl
+import com.example.todolist.data.RoomRepositoryImpl
 
 class MainViewModel(app: Application) : AndroidViewModel(app) {
-    private val roomManager : RoomManager = RoomManagerImpl(app)
+    private val roomManager : RoomManager = RoomRepositoryImpl(app)
     private val todoItemList: MutableLiveData<List<ItemsViewModel>> = MutableLiveData()
     val todoItemListResult: LiveData<List<ItemsViewModel>> = todoItemList
 

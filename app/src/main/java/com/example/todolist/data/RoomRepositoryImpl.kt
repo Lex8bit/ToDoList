@@ -9,7 +9,7 @@ import com.example.todolist.room.AppDatabase
 /**
  * Manager that handles logic with ROOM database
  */
-class RoomManagerImpl(private val context : Context) : RoomManager {
+class RoomRepositoryImpl(private val context : Context) : RoomManager {
        //room
        private var db = Room.databaseBuilder(
               context,

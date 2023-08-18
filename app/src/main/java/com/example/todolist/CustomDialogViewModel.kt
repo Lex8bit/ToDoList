@@ -4,11 +4,11 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.todolist.data.PrefsManagerImpl
+import com.example.todolist.data.PrefsRepositoryImpl
 
 class CustomDialogViewModel(app: Application) : AndroidViewModel(app) {
 
-    private val prefsManager : PrefsManager = PrefsManagerImpl(app)
+    private val prefsManager : PrefsManager = PrefsRepositoryImpl(app)
     private val todoItem: MutableLiveData<ItemsViewModel> = MutableLiveData()
     val todoItemResult: LiveData<ItemsViewModel> = todoItem
 
