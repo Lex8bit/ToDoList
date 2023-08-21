@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.todolist.data.RoomRepositoryImpl
 
 class MainViewModel(app: Application) : AndroidViewModel(app) {
-    private val roomManager : RoomManager = RoomRepositoryImpl(app)
+    private val roomRepository : RoomRepository = RoomRepositoryImpl(app)
     private val todoItemList: MutableLiveData<List<ItemsViewModel>> = MutableLiveData()
     val todoItemListResult: LiveData<List<ItemsViewModel>> = todoItemList
 
@@ -15,7 +15,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
      * Provides all data from Room
      */
     fun getAllData() {
-        val result = roomManager.getAllItems()
+        val result = roomRepository.getAllItems()
         todoItemList.postValue(result)
     }
 
@@ -26,7 +26,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun insertItem(item: ItemsViewModel) {
          todoItemList.value.let {
              todoItemList.postValue(it?.plus(item))
-             roomManager.insertItem(item)
+             roomRepository.insertItem(item)
          }
     }
 
@@ -35,8 +35,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
      * @param item - provides item that need to be update in room database
      */
     fun updateItem(item: ItemsViewModel) {
-        roomManager.updateItem(item)
-        todoItemList.postValue(roomManager.getAllItems())
+        roomRepository.updateItem(item)
+        todoItemList.postValue(roomRepository.getAllItems())
     }
 
     /**
@@ -46,7 +46,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun deleteItem(item: ItemsViewModel) {
         todoItemList.value.let {
             todoItemList.postValue(it?.minus(item))
-            roomManager.deleteItem(item)
+            roomRepository.deleteItem(item)
         }
     }
 }
