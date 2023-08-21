@@ -1,6 +1,6 @@
 package com.example.todolist
 
-interface PrefsManager {
+interface PrefsRepository {
     /**
      * Return ToDoItem from Prefs
      */

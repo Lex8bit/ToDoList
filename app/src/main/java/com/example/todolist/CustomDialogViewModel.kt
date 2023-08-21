@@ -8,13 +8,13 @@ import com.example.todolist.data.PrefsRepositoryImpl
 
 class CustomDialogViewModel(app: Application) : AndroidViewModel(app) {
 
-    private val prefsManager : PrefsManager = PrefsRepositoryImpl(app)
+    private val prefsRepository : PrefsRepository = PrefsRepositoryImpl(app)
     private val todoItem: MutableLiveData<ItemsViewModel> = MutableLiveData()
     val todoItemResult: LiveData<ItemsViewModel> = todoItem
 
     /**Provides preferences values for ToDoItem*/
     fun getToDoItemFromPrefs() {
-        val result = prefsManager.getToDoItem()
+        val result = prefsRepository.getToDoItem()
         todoItem.postValue(result)
     }
 
@@ -23,6 +23,6 @@ class CustomDialogViewModel(app: Application) : AndroidViewModel(app) {
      * @param value - provides data that need to be saved in prefs
      */
     fun saveDataInPrefs(key: String, value: String) {
-        prefsManager.saveDataInPrefs(key,value)
+        prefsRepository.saveDataInPrefs(key,value)
     }
 }
