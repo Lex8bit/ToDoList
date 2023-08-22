@@ -13,13 +13,13 @@ class MainViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private lateinit var subject : MainViewModel
-    private val applicationMock: Application = mock()
+    private val roomRepositoryMock : RoomRepository = mock()
 
     private val itemTest : ItemsViewModel = ItemsViewModel(0, "test Title", "test Description")
 
     @Before
     fun setup(){
-        subject = MainViewModel(applicationMock)
+        subject = MainViewModel(roomRepositoryMock)
     }
 
     @Test

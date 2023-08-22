@@ -2,6 +2,7 @@ package com.example.todolist
 
 import android.content.Context
 import com.example.todolist.data.RoomRepositoryImpl
+import com.example.todolist.room.ItemsToDoDao
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
@@ -9,11 +10,11 @@ import org.mockito.Mockito.mock
 class RoomRepositoryImplTest {
 
     private lateinit var subject : RoomRepositoryImpl
-    private val contextMock : Context = mock()
+    private val toDoDaoMock : ItemsToDoDao = mock()
 
     @Before
     fun setup(){
-        subject = RoomRepositoryImpl(contextMock)
+        subject = RoomRepositoryImpl(toDoDaoMock)
     }
 
     @Test
