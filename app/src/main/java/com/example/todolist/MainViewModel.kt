@@ -38,13 +38,13 @@ class MainViewModel @Inject constructor(private val roomRepository:RoomRepositor
      * @param item - provides item that need to be update in room database
      */
     fun updateItem(item: ItemsViewModel) {
-        roomRepository.updateItem(item)
         val foundIndex = todoItemList.value?.indexOfFirst { it.id == item.id }
         foundIndex?.let {
             val list = todoItemList.value?.toMutableList()
             list?.set(it, item)
             todoItemList.value= list!!
         }
+        roomRepository.updateItem(item)
 //        todoItemList.postValue(roomRepository.getAllItems())
     }
 
