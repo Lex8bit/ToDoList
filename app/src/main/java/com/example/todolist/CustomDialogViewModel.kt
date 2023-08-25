@@ -4,11 +4,20 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.todolist.data.PrefsRepositoryImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class CustomDialogViewModel(app: Application) : AndroidViewModel(app) {
+@HiltViewModel
+class CustomDialogViewModel @Inject constructor(
+    private val prefsRepository: PrefsRepository
+    ) : ViewModel() {
 
+<<<<<<< HEAD
     private val prefsRepository : PrefsRepository = PrefsRepositoryImpl(app)
+=======
+>>>>>>> newBrunch
     private val todoItem: MutableLiveData<ItemsViewModel> = MutableLiveData()
     val todoItemResult: LiveData<ItemsViewModel> = todoItem
 

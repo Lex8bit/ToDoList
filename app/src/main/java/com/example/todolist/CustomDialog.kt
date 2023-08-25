@@ -14,7 +14,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.example.todolist.data.PrefsRepositoryImpl.Companion.PREFS_DESCRIPTION_KEY
 import com.example.todolist.data.PrefsRepositoryImpl.Companion.PREFS_TITLE_KEY
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CustomDialog(
     private val isNewItem: Boolean,
     private val item: ItemsViewModel?) : DialogFragment(), View.OnClickListener {
