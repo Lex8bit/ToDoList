@@ -25,13 +25,11 @@ class CustomDialog(
     private val customDialogViewModel : CustomDialogViewModel by activityViewModels()
     private val mainViewModel : MainViewModel by activityViewModels()
 
-
     private lateinit var okButton : Button
     private lateinit var cancelButton : Button
     private lateinit var inputFieldTitle : EditText
     private lateinit var inputFieldDescription : EditText
     private lateinit var dialogLabel : TextView
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -113,7 +111,6 @@ class CustomDialog(
                 inputDescriptionResult
             )
         )
-
     }
 
     private fun okNewItemBeenClicked(view: View) {

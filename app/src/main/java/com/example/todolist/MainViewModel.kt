@@ -9,13 +9,9 @@ import com.example.todolist.data.RoomRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-<<<<<<< HEAD
-class MainViewModel(app: Application) : AndroidViewModel(app) {
-    private val roomManager : RoomRepository = RoomRepositoryImpl(app)
-=======
+
 @HiltViewModel
 class MainViewModel @Inject constructor(private val roomRepository:RoomRepository) : ViewModel() {
->>>>>>> newBrunch
     private val todoItemList: MutableLiveData<List<ItemsViewModel>> = MutableLiveData()
     val todoItemListResult: LiveData<List<ItemsViewModel>> = todoItemList
 

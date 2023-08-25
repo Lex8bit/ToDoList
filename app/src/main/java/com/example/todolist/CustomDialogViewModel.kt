@@ -13,11 +13,6 @@ import javax.inject.Inject
 class CustomDialogViewModel @Inject constructor(
     private val prefsRepository: PrefsRepository
     ) : ViewModel() {
-
-<<<<<<< HEAD
-    private val prefsRepository : PrefsRepository = PrefsRepositoryImpl(app)
-=======
->>>>>>> newBrunch
     private val todoItem: MutableLiveData<ItemsViewModel> = MutableLiveData()
     val todoItemResult: LiveData<ItemsViewModel> = todoItem
 
